@@ -16,7 +16,7 @@ public class ConnectedMessageHandler(
   override fun getHandledMessage(): String = "connected"
 
   override fun handleMessage(data: JsonNode): Array<Any> {
-    val digest = botConfiguration.password
+    val digest = botConfiguration.sha256Password
 
     ReconnectWaitService.instance.resetWaitingTime()
     PingMessageHandler.updateLastPing()

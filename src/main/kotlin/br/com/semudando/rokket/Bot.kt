@@ -1,7 +1,5 @@
 package br.com.semudando.rokket
 
-import br.com.semudando.rokket.exception.LoginException
-import br.com.semudando.rokket.exception.TerminateWebsocketClientException
 import br.com.semudando.rokket.handler.message.AbstractMessageHandler
 import br.com.semudando.rokket.util.ReconnectWaitService
 import br.com.semudando.rokket.websocket.ConnectMessage
@@ -14,7 +12,6 @@ import io.ktor.client.plugins.websocket.wss
 import io.ktor.http.HttpMethod
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.reflections.Reflections
@@ -24,41 +21,27 @@ public class Bot(
   private val botConfiguration: BotConfiguration,
   private val eventHandler: EventHandler,
 ) {
+  private val httpClient = HttpClient(CIO) { install(WebSockets) }
+
   internal companion object {
     val subscriptionService = SubscriptionService()
     var userId: String? = null
     var authToken: String? = null
-    var host: String = ""
   }
 
   public fun start() {
-    host = botConfiguration.host
-
     runBlocking { runWebsocketClient() }
 
   }
 
   private suspend fun runWebsocketClient() {
     while (true) {
-      try {
-        val client = HttpClient(CIO) {
-          install(WebSockets)
-        }
-        client.wss(
-          method = HttpMethod.Get,
-          host = botConfiguration.host,
-          path = "/websocket"
-        ) {
-          try {
-            val messageOutputRoutine = async { receiveMessages() }
-            val userInputRoutine = async { sendMessage(ConnectMessage()) }
+      httpClient.wss(HttpMethod.Get, botConfiguration.host, path = "/websocket") {
+        val messageOutputRoutine = launch { receiveMessages() }
+        val userInputRoutine = launch { sendMessage(ConnectMessage()) }
 
-            userInputRoutine.await()
-            messageOutputRoutine.await()
-          } catch (e: Exception) {
-          }
-        }
-      } catch (e: Exception) {
+        userInputRoutine.join()
+        messageOutputRoutine.join()
       }
 
       ReconnectWaitService.instance.wait()
@@ -91,35 +74,21 @@ public class Bot(
       }
       .associateBy { it.getHandledMessage() }
 
-
-    try {
-      for (message in incoming) {
-        launch {
-          if (message !is Frame.Text) {
-            return@launch
-          }
-          val text = message.readText()
-
-          val data = ObjectMapper().readTree(text)
-          val messageType = data.get("msg")?.textValue() ?: return@launch
-          if (messageType !in handlers) {
-            return@launch
-          }
-
-          try {
-            handlers[messageType]
-              ?.handleMessage(data)
-              ?.forEach { sendMessage(it) }
-          } catch (e: LoginException) {
-            throw TerminateWebsocketClientException()
-          } catch (e: Exception) {
-          }
+    for (message in incoming) {
+      launch {
+        if (message !is Frame.Text) {
+          return@launch
         }
-      }
+        val text = message.readText()
 
-    } catch (e: TerminateWebsocketClientException) {
-      throw e
-    } catch (e: Exception) {
+        val data = ObjectMapper().readTree(text)
+        val messageType = data.get("msg")?.textValue() ?: return@launch
+        if (messageType !in handlers) {
+          return@launch
+        }
+
+        handlers[messageType]?.handleMessage(data)?.forEach { sendMessage(it) }
+      }
     }
   }
 }
