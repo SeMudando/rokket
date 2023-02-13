@@ -4,7 +4,7 @@ import br.com.semudando.rokket.EventHandler
 import br.com.semudando.rokket.websocket.SendMessageMessage
 import java.util.UUID
 
-class MessageHelper {
+internal class MessageHelper {
   companion object {
     val instance = MessageHelper()
   }

@@ -4,8 +4,11 @@ import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.EventHandler
 import com.fasterxml.jackson.databind.JsonNode
 
-abstract class AbstractStreamHandler(val eventHandler: EventHandler, val botConfiguration: BotConfiguration) {
-  abstract fun getHandledStream(): String
+public abstract class AbstractStreamHandler(
+  public val eventHandler: EventHandler,
+  public val botConfiguration: BotConfiguration,
+) {
+  public abstract fun getHandledStream(): String
 
-  abstract fun handleStreamMessage(data: JsonNode): List<List<Any>>
+  public abstract fun handleStreamMessage(data: JsonNode): List<List<Any>>
 }

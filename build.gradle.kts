@@ -22,3 +22,7 @@ dependencies {
     implementation(libs.reflections)
 
 }
+
+kotlin {
+  explicitApi()
+}

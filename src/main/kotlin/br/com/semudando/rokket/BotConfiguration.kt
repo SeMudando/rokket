@@ -1,6 +1,6 @@
 package br.com.semudando.rokket
 
-data class BotConfiguration(
+public data class BotConfiguration(
   val host: String,
   val username: String,
   val password: String,

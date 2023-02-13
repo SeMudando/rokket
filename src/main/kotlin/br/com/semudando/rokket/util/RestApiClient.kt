@@ -10,7 +10,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
 
-class RestApiClient(private val botHost: String) {
+internal class RestApiClient(private val botHost: String) {
   fun updateStatus() {
     val response: UsersSetStatusResponse = runBlocking {
       createHttpClient().post {

@@ -6,10 +6,11 @@ import br.com.semudando.rokket.util.MessageHelper
 import br.com.semudando.rokket.websocket.SendMessageMessage
 import com.fasterxml.jackson.databind.JsonNode
 
-@Suppress("unused")
-class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
-  AbstractStreamHandler(eventHandler, botConfiguration) {
-  override fun getHandledStream() = "stream-room-messages"
+public class RoomMessageStreamHandler(
+  eventHandler: EventHandler,
+  botConfiguration: BotConfiguration,
+) : AbstractStreamHandler(eventHandler, botConfiguration) {
+  override fun getHandledStream(): String = "stream-room-messages"
 
   @Suppress("UNCHECKED_CAST")
   override fun handleStreamMessage(data: JsonNode): List<List<Any>> {

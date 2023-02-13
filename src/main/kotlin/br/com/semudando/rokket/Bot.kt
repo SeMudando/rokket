@@ -28,24 +28,18 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.TimeUnit
 
 
-class Bot(
+public class Bot(
   private val botConfiguration: BotConfiguration,
   private val eventHandler: EventHandler,
-  private val healthChecker: HealthChecker,
 ) {
-  companion object {
-    val webserviceMessageQueue = ArrayBlockingQueue<WebserviceMessage>(10)
+  internal companion object {
     val subscriptionService = SubscriptionService()
-    val statusService = StatusService()
     var userId: String? = null
     var authToken: String? = null
     var host: String = ""
   }
 
-  fun start() {
-    statusService.healthChecker = this.healthChecker
-    statusService.startDate = LocalDateTime.now()
-
+  public fun start() {
     host = botConfiguration.host
 
     runBlocking { runWebsocketClient() }
@@ -66,11 +60,9 @@ class Bot(
           try {
             val messageOutputRoutine = async { receiveMessages() }
             val userInputRoutine = async { sendMessage(ConnectMessage()) }
-            val webserviceMessageRoutine = async { waitForWebserviceInput() }
 
             userInputRoutine.await()
             messageOutputRoutine.await()
-            webserviceMessageRoutine.cancelAndJoin()
           } catch (e: Exception) {
           }
         }
@@ -84,26 +76,6 @@ class Bot(
       // to ensure that upon reconnect, the bot
       // will properly re-subscribe to all channels
       subscriptionService.reset()
-    }
-  }
-
-  private suspend fun DefaultClientWebSocketSession.waitForWebserviceInput() {
-    withContext(Dispatchers.IO) {
-      while (isActive) {
-        val webserviceInput =
-          webserviceMessageQueue.poll(5, TimeUnit.SECONDS) ?: continue
-        sendMessage(
-          MessageHelper.instance.createSendMessage(
-            webserviceInput.roomId!!,
-            webserviceInput.message,
-            botConfiguration.botId,
-            webserviceInput.emoji,
-            webserviceInput.username
-          )
-        )
-
-        Thread.sleep(1000L)
-      }
     }
   }
 

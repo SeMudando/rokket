@@ -6,9 +6,10 @@ import br.com.semudando.rokket.handler.stream.AbstractStreamHandler
 import com.fasterxml.jackson.databind.JsonNode
 import org.reflections.Reflections
 
-@Suppress("unused")
-class ChangedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
-  AbstractMessageHandler(eventHandler, botConfiguration) {
+public class ChangedMessageHandler(
+  eventHandler: EventHandler,
+  botConfiguration: BotConfiguration,
+) : AbstractMessageHandler(eventHandler, botConfiguration) {
   private val handlers: Map<String, AbstractStreamHandler> =
     Reflections(AbstractStreamHandler::class.java.packageName)
       .getSubTypesOf(AbstractStreamHandler::class.java)
@@ -19,7 +20,7 @@ class ChangedMessageHandler(eventHandler: EventHandler, botConfiguration: BotCon
       }
       .associateBy { it.getHandledStream() }
 
-  override fun getHandledMessage() = "changed"
+  override fun getHandledMessage(): String = "changed"
 
   override fun handleMessage(data: JsonNode): Array<Any> {
     val collection = data.get("collection")?.textValue() ?: return emptyArray()

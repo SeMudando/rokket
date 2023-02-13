@@ -4,7 +4,7 @@ import br.com.semudando.rokket.websocket.SubscribeMessage
 import br.com.semudando.rokket.websocket.UnsubscribeMessage
 import java.util.UUID
 
-class SubscriptionService {
+internal class SubscriptionService {
   private val channelsById = HashMap<String, ChannelData>()
   private val channelsByName = HashMap<String, ChannelData>()
   private val newestTimestampsSeen = HashMap<String, Long>()
@@ -25,7 +25,7 @@ class SubscriptionService {
     }
     channelsById[channelId] = channelData
 
-    return SubscribeMessage(id = subscriptionId, name = "stream-room-messages", params = arrayOf(channelId, false))
+    return SubscribeMessage(id = subscriptionId, name = "stream-room-messages", params = listOf(channelId, false))
   }
 
   fun handleUnsubscription(channelId: String): UnsubscribeMessage? {
@@ -62,7 +62,7 @@ class SubscriptionService {
   }
 }
 
-data class ChannelData(
+internal data class ChannelData(
   val id: String,
   val name: String?,
   val type: EventHandler.ChannelType,

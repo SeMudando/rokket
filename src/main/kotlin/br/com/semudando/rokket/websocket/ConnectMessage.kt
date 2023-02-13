@@ -1,7 +1,7 @@
 package br.com.semudando.rokket.websocket
 
-data class ConnectMessage(
+public data class ConnectMessage(
   val msg: String = "connect",
   val version: String = "1",
-  val support: Array<String> = arrayOf("1"),
+  val support: List<String> = listOf("1"),
 )

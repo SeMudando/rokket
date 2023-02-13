@@ -6,10 +6,11 @@ import br.com.semudando.rokket.util.MessageHelper
 import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
-@Suppress("unused")
-class NotifyUserStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
-  AbstractStreamHandler(eventHandler, botConfiguration) {
-  override fun getHandledStream() = "stream-notify-user"
+public class NotifyUserStreamHandler(
+  eventHandler: EventHandler,
+  botConfiguration: BotConfiguration,
+) : AbstractStreamHandler(eventHandler, botConfiguration) {
+  override fun getHandledStream(): String = "stream-notify-user"
 
   override fun handleStreamMessage(data: JsonNode): List<List<Any>> {
     val eventNode = data.get("fields")?.get("eventName")

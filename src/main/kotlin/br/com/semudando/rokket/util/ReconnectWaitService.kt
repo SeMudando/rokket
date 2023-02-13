@@ -2,7 +2,7 @@ package br.com.semudando.rokket.util
 
 import kotlinx.coroutines.delay
 
-class ReconnectWaitService {
+internal class ReconnectWaitService {
   private var waitingTime = -1
 
   companion object {
