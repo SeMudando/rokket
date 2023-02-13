@@ -2,7 +2,7 @@ package at.rueckgr.kotlin.rocketbot.util
 
 import kotlinx.coroutines.delay
 
-class ReconnectWaitService : Logging {
+class ReconnectWaitService {
     private var waitingTime = -1
 
     companion object {
@@ -15,7 +15,6 @@ class ReconnectWaitService : Logging {
 
     suspend fun wait() {
         val waitingTime = this.getWaitingTime()
-        logger().info("Waiting $waitingTime seconds")
 
         delay(waitingTime * 1000L)
     }

@@ -1,7 +1,6 @@
 package at.rueckgr.kotlin.rocketbot.util
 
 import at.rueckgr.kotlin.rocketbot.Bot
-import at.rueckgr.kotlin.rocketbot.BotConfiguration
 import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -12,7 +11,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
 
-class RestApiClient(private val botHost: String) : Logging {
+class RestApiClient(private val botHost: String) {
     fun updateStatus() {
         val response: UsersSetStatusResponse = runBlocking {
             createHttpClient().post {
@@ -27,7 +26,6 @@ class RestApiClient(private val botHost: String) : Logging {
         }
 
         if (!response.success) {
-            logger().error("Failed to set user status")
         }
     }
 
@@ -41,7 +39,6 @@ class RestApiClient(private val botHost: String) : Logging {
         }
 
         if (!statisticsResponse.success) {
-            logger().error("Failed to get statistics: {}", statisticsResponse.error)
             return null
         }
 

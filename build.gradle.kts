@@ -12,4 +12,13 @@ repositories {
 }
 
 dependencies {
+    // Jackson
+    implementation(libs.bundles.jackson)
+
+    // Ktor Client
+    implementation(libs.bundles.ktor.client)
+
+    // Reflections
+    implementation(libs.reflections)
+
 }

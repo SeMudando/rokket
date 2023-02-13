@@ -3,13 +3,12 @@ package at.rueckgr.kotlin.rocketbot.handler.message
 import at.rueckgr.kotlin.rocketbot.BotConfiguration
 import at.rueckgr.kotlin.rocketbot.EventHandler
 import at.rueckgr.kotlin.rocketbot.handler.stream.AbstractStreamHandler
-import at.rueckgr.kotlin.rocketbot.util.Logging
 import com.fasterxml.jackson.databind.JsonNode
 import org.reflections.Reflections
 
 @Suppress("unused")
 class ChangedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration), Logging {
+        : AbstractMessageHandler(eventHandler, botConfiguration) {
     private val handlers: Map<String, AbstractStreamHandler> =
         Reflections(AbstractStreamHandler::class.java.packageName)
             .getSubTypesOf(AbstractStreamHandler::class.java)

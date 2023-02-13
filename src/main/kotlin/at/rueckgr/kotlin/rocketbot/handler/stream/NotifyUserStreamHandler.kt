@@ -3,14 +3,13 @@ package at.rueckgr.kotlin.rocketbot.handler.stream
 import at.rueckgr.kotlin.rocketbot.Bot
 import at.rueckgr.kotlin.rocketbot.BotConfiguration
 import at.rueckgr.kotlin.rocketbot.EventHandler
-import at.rueckgr.kotlin.rocketbot.util.Logging
 import at.rueckgr.kotlin.rocketbot.util.MessageHelper
 import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
 @Suppress("unused")
 class NotifyUserStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractStreamHandler(eventHandler, botConfiguration), Logging {
+        : AbstractStreamHandler(eventHandler, botConfiguration) {
     override fun getHandledStream() = "stream-notify-user"
 
     override fun handleStreamMessage(data: JsonNode): List<List<Any>> {

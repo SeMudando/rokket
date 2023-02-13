@@ -3,6 +3,7 @@ kotlin = "1.8.0"
 kotest = "5.5.4"
 sqldelight = "1.5.4"
 ktor = "2.2.3"
+jackson = "2.14.1"
 
 [libraries]
 kotest-runner-junit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
@@ -15,15 +16,24 @@ jdbc-driver = { module = "com.squareup.sqldelight:jdbc-driver", version.ref = "s
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.3"
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
 kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+reflections = "org.reflections:reflections:0.10.2"
 
 
 [bundles]
 kotest = ["kotest-runner-junit5", "kotest-extensions-test-containers", "kotest-property-testing", "kotest-assertions-json"]
-ktor-client = ["ktor-client-core", "ktor-client-cio", "ktor-client-websockets", "ktor-client-logging"]
+ktor-client = ["ktor-client-core", "ktor-client-cio", "ktor-client-websockets", "ktor-client-logging", "ktor-client-content-negotiation",
+    "ktor-serialization-kotlinx-json",
+"ktor-serialization-jackson"]
+jackson = ["jackson-jsr310", "jackson-databind"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

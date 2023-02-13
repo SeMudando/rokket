@@ -3,16 +3,13 @@ package at.rueckgr.kotlin.rocketbot.handler.stream
 import at.rueckgr.kotlin.rocketbot.Bot
 import at.rueckgr.kotlin.rocketbot.BotConfiguration
 import at.rueckgr.kotlin.rocketbot.EventHandler
-import at.rueckgr.kotlin.rocketbot.util.Logging
 import at.rueckgr.kotlin.rocketbot.util.MessageHelper
-import at.rueckgr.kotlin.rocketbot.util.logger
 import at.rueckgr.kotlin.rocketbot.websocket.SendMessageMessage
 import com.fasterxml.jackson.databind.JsonNode
-import org.apache.commons.lang3.StringUtils
 
 @Suppress("unused")
 class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-    : AbstractStreamHandler(eventHandler, botConfiguration), Logging {
+    : AbstractStreamHandler(eventHandler, botConfiguration) {
     override fun getHandledStream() = "stream-room-messages"
 
     @Suppress("UNCHECKED_CAST")
@@ -33,7 +30,6 @@ class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: Bot
     private fun isIgnoredRoom(item: JsonNode): Boolean {
         val roomName = getRoomName(item)
         if (roomName != null && botConfiguration.ignoredChannels.contains(roomName)) {
-            logger().info("Message comes from ignored channel {}, ignoring", roomName)
             return true
         }
         return false
@@ -50,9 +46,8 @@ class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: Bot
         }
 
         val i = messageNode.get("bot")?.get("i")?.textValue() ?: ""
-        val botMessage = StringUtils.isNotBlank(i)
+        val botMessage = i.isNotBlank()
         if (botMessage) {
-            logger().debug("Message comes from self-declared bot")
         }
 
         val username = messageNode.get("u")?.get("username")?.textValue() ?: ""
@@ -64,7 +59,6 @@ class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: Bot
         val message = EventHandler.Message(messageText, botMessage)
 
         val outgoingMessages = if(username == botConfiguration.username) {
-            logger().debug("Message comes from myself")
             eventHandler.handleOwnMessage(channel, user, message)
         }
         else {
@@ -83,10 +77,8 @@ class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: Bot
             synchronized(this) {
                 val newestTimestampSeen = Bot.subscriptionService.getNewestTimestampSeen(roomId)
                 if (newestTimestampSeen != null && timestamp <= newestTimestampSeen) {
-                    logger().debug("Timestamp of message ({}) is not newer than newest timestamp seen ({}), ignoring", timestamp, newestTimestampSeen)
                     return true
                 }
-                logger().debug("Updating newest timestamp seen from {} to {}", newestTimestampSeen, timestamp)
                 Bot.subscriptionService.updateNewestTimestampSeen(roomId, timestamp)
             }
         }

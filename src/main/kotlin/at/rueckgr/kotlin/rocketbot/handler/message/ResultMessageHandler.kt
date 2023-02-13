@@ -4,10 +4,8 @@ import at.rueckgr.kotlin.rocketbot.Bot
 import at.rueckgr.kotlin.rocketbot.BotConfiguration
 import at.rueckgr.kotlin.rocketbot.EventHandler
 import at.rueckgr.kotlin.rocketbot.exception.LoginException
-import at.rueckgr.kotlin.rocketbot.util.Logging
 import at.rueckgr.kotlin.rocketbot.util.MessageHelper
 import at.rueckgr.kotlin.rocketbot.util.RestApiClient
-import at.rueckgr.kotlin.rocketbot.util.logger
 import at.rueckgr.kotlin.rocketbot.websocket.RoomsGetMessage
 import at.rueckgr.kotlin.rocketbot.websocket.SubscribeMessage
 import com.fasterxml.jackson.databind.JsonNode
@@ -15,14 +13,13 @@ import java.util.*
 
 @Suppress("unused")
 class ResultMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration), Logging {
+        : AbstractMessageHandler(eventHandler, botConfiguration) {
     override fun getHandledMessage() = "result"
 
     override fun handleMessage(data: JsonNode) = when (val id = data.get("id")?.textValue()) {
         "login-initial" -> handleLoginInitial(data)
         "get-rooms-initial" -> handleGetRoomsResult(data)
         else -> {
-            logger().debug("Ignoring message with id {}", id)
             emptyArray()
         }
     }

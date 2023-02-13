@@ -1,21 +1,17 @@
 package at.rueckgr.kotlin.rocketbot
 
-import at.rueckgr.kotlin.rocketbot.util.Logging
-import at.rueckgr.kotlin.rocketbot.util.logger
 import at.rueckgr.kotlin.rocketbot.websocket.SubscribeMessage
 import at.rueckgr.kotlin.rocketbot.websocket.UnsubscribeMessage
 import java.util.*
 
-class SubscriptionService : Logging {
+class SubscriptionService {
     private val channelsById = HashMap<String, ChannelData>()
     private val channelsByName = HashMap<String, ChannelData>()
     private val newestTimestampsSeen = HashMap<String, Long>()
 
     fun handleSubscription(channelId: String, channelName: String?, channelType: EventHandler.ChannelType): SubscribeMessage? {
-        logger().info("Subscribing to channel with id {} and name {}", channelId, channelName)
 
         if (channelsById.contains(channelId)) {
-            logger().info("Already subscribed to channel {}", channelId)
             return null
         }
         val subscriptionId = UUID.randomUUID().toString()
@@ -29,11 +25,9 @@ class SubscriptionService : Logging {
     }
 
     fun handleUnsubscription(channelId: String): UnsubscribeMessage? {
-        logger().info("Unsubscribing from {}", channelId)
 
         val channel = channelsById[channelId]
         if (channel == null) {
-            logger().error("Unknown channel {}", channelId)
             return null
         }
 

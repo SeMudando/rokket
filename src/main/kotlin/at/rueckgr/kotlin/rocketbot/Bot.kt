@@ -3,10 +3,8 @@ package at.rueckgr.kotlin.rocketbot
 import at.rueckgr.kotlin.rocketbot.exception.LoginException
 import at.rueckgr.kotlin.rocketbot.exception.TerminateWebsocketClientException
 import at.rueckgr.kotlin.rocketbot.handler.message.AbstractMessageHandler
-import at.rueckgr.kotlin.rocketbot.util.Logging
 import at.rueckgr.kotlin.rocketbot.util.MessageHelper
 import at.rueckgr.kotlin.rocketbot.util.ReconnectWaitService
-import at.rueckgr.kotlin.rocketbot.util.logger
 import at.rueckgr.kotlin.rocketbot.websocket.ConnectMessage
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
@@ -23,8 +21,7 @@ import java.util.concurrent.TimeUnit
 
 class Bot(private val botConfiguration: BotConfiguration,
           private val eventHandler: EventHandler,
-          private val webserviceUserValidator: WebserviceUserValidator,
-          private val healthChecker: HealthChecker) : Logging {
+          private val healthChecker: HealthChecker) {
     companion object {
         val webserviceMessageQueue = ArrayBlockingQueue<WebserviceMessage>(10)
         val subscriptionService = SubscriptionService()
@@ -40,23 +37,8 @@ class Bot(private val botConfiguration: BotConfiguration,
 
         host = botConfiguration.host
 
-        logger().info(
-            "Configuration: host={}, username={}, ignoredChannels={}, webservicePort={}",
-            botConfiguration.host, botConfiguration.username, botConfiguration.ignoredChannels, botConfiguration.webservicePort
-        )
-
-        val webservice = Webservice(botConfiguration.webservicePort, webserviceUserValidator, statusService)
-        try {
-            webservice.start()
-        }
-        catch (e: Exception) {
-            logger().error("Error while creating webservice", e)
-            return
-        }
         runBlocking { runWebsocketClient() }
 
-        logger().debug("Shutting down bot")
-        webservice.stop()
     }
 
     private suspend fun runWebsocketClient() {
@@ -79,17 +61,14 @@ class Bot(private val botConfiguration: BotConfiguration,
                         messageOutputRoutine.await()
                         webserviceMessageRoutine.cancelAndJoin()
                     } catch (e: Exception) {
-                        logger().error("Websocket error", e)
                     }
                 }
             }
             catch (e: Exception) {
-                logger().error("Error during (re)connect", e)
             }
 
             ReconnectWaitService.instance.wait()
 
-            logger().info("Websocket closed, trying to reconnect")
 
             // we must clear the list of all channels
             // to ensure that upon reconnect, the bot
@@ -119,7 +98,6 @@ class Bot(private val botConfiguration: BotConfiguration,
         // TODO implement token refresh
 
         val jsonMessage = ObjectMapper().writeValueAsString(message)
-        logger().debug("Outgoing message: {}", jsonMessage)
         send(Frame.Text(jsonMessage))
     }
 
@@ -141,12 +119,10 @@ class Bot(private val botConfiguration: BotConfiguration,
                         return@launch
                     }
                     val text = message.readText()
-                    logger().debug("Incoming message: {}", text)
 
                     val data = ObjectMapper().readTree(text)
                     val messageType = data.get("msg")?.textValue() ?: return@launch
                     if (messageType !in handlers) {
-                        logger().info("Unknown message type \"{}\", ignoring message", messageType)
                         return@launch
                     }
 
@@ -156,22 +132,18 @@ class Bot(private val botConfiguration: BotConfiguration,
                             ?.forEach { sendMessage(it) }
                     }
                     catch (e: LoginException) {
-                        logger().error(e.message, e)
                         throw TerminateWebsocketClientException()
                     }
                     catch (e: Exception) {
-                        logger().error(e.message, e)
                     }
                 }
             }
 
-            logger().info("Websocket closed by server")
         }
         catch (e: TerminateWebsocketClientException) {
             throw e
         }
         catch (e: Exception) {
-            logger().error("Error while receiving", e)
         }
     }
 }
