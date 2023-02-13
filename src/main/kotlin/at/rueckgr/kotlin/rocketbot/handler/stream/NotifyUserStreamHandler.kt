@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
 @Suppress("unused")
-class NotifyUserStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractStreamHandler(eventHandler, botConfiguration) {
+class NotifyUserStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+    AbstractStreamHandler(eventHandler, botConfiguration) {
     override fun getHandledStream() = "stream-notify-user"
 
     override fun handleStreamMessage(data: JsonNode): List<List<Any>> {

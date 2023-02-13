@@ -7,21 +7,32 @@ import at.rueckgr.kotlin.rocketbot.util.MessageHelper
 import at.rueckgr.kotlin.rocketbot.util.ReconnectWaitService
 import at.rueckgr.kotlin.rocketbot.websocket.ConnectMessage
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.http.*
-import io.ktor.websocket.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.wss
+import io.ktor.http.HttpMethod
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.reflections.Reflections
 import java.time.LocalDateTime
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.TimeUnit
 
 
-class Bot(private val botConfiguration: BotConfiguration,
-          private val eventHandler: EventHandler,
-          private val healthChecker: HealthChecker) {
+class Bot(
+    private val botConfiguration: BotConfiguration,
+    private val eventHandler: EventHandler,
+    private val healthChecker: HealthChecker,
+) {
     companion object {
         val webserviceMessageQueue = ArrayBlockingQueue<WebserviceMessage>(10)
         val subscriptionService = SubscriptionService()
@@ -63,8 +74,7 @@ class Bot(private val botConfiguration: BotConfiguration,
                     } catch (e: Exception) {
                     }
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
             }
 
             ReconnectWaitService.instance.wait()
@@ -81,13 +91,15 @@ class Bot(private val botConfiguration: BotConfiguration,
         withContext(Dispatchers.IO) {
             while (isActive) {
                 val webserviceInput = webserviceMessageQueue.poll(5, TimeUnit.SECONDS) ?: continue
-                sendMessage(MessageHelper.instance.createSendMessage(
-                    webserviceInput.roomId!!,
-                    webserviceInput.message,
-                    botConfiguration.botId,
-                    webserviceInput.emoji,
-                    webserviceInput.username
-                ))
+                sendMessage(
+                    MessageHelper.instance.createSendMessage(
+                        webserviceInput.roomId!!,
+                        webserviceInput.message,
+                        botConfiguration.botId,
+                        webserviceInput.emoji,
+                        webserviceInput.username
+                    )
+                )
 
                 Thread.sleep(1000L)
             }
@@ -130,20 +142,16 @@ class Bot(private val botConfiguration: BotConfiguration,
                         handlers[messageType]
                             ?.handleMessage(data)
                             ?.forEach { sendMessage(it) }
-                    }
-                    catch (e: LoginException) {
+                    } catch (e: LoginException) {
                         throw TerminateWebsocketClientException()
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                     }
                 }
             }
 
-        }
-        catch (e: TerminateWebsocketClientException) {
+        } catch (e: TerminateWebsocketClientException) {
             throw e
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
         }
     }
 }

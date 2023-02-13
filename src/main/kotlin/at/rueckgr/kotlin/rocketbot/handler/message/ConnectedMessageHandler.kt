@@ -10,8 +10,8 @@ import at.rueckgr.kotlin.rocketbot.websocket.WebserviceRequestParam
 import com.fasterxml.jackson.databind.JsonNode
 
 @Suppress("unused")
-class ConnectedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration) {
+class ConnectedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+    AbstractMessageHandler(eventHandler, botConfiguration) {
     override fun getHandledMessage() = "connected"
 
     override fun handleMessage(data: JsonNode): Array<Any> {

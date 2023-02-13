@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
 @Suppress("unused")
-class ResultMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration) {
+class ResultMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+    AbstractMessageHandler(eventHandler, botConfiguration) {
     override fun getHandledMessage() = "result"
 
     override fun handleMessage(data: JsonNode) = when (val id = data.get("id")?.textValue()) {
@@ -35,8 +35,16 @@ class ResultMessageHandler(eventHandler: EventHandler, botConfiguration: BotConf
 
         return arrayOf(
             RoomsGetMessage(id = "get-rooms-initial"),
-            SubscribeMessage(id = "subscribe-stream-notify-user-rooms", name = "stream-notify-user", params = arrayOf("$userId/rooms-changed", false)),
-            SubscribeMessage(id = "subscribe-stream-notify-user-subscriptions", name = "stream-notify-user", params = arrayOf("$userId/subscriptions-changed", false))
+            SubscribeMessage(
+                id = "subscribe-stream-notify-user-rooms",
+                name = "stream-notify-user",
+                params = arrayOf("$userId/rooms-changed", false)
+            ),
+            SubscribeMessage(
+                id = "subscribe-stream-notify-user-subscriptions",
+                name = "stream-notify-user",
+                params = arrayOf("$userId/subscriptions-changed", false)
+            )
         )
     }
 

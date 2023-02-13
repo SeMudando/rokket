@@ -2,14 +2,18 @@ package at.rueckgr.kotlin.rocketbot
 
 import at.rueckgr.kotlin.rocketbot.websocket.SubscribeMessage
 import at.rueckgr.kotlin.rocketbot.websocket.UnsubscribeMessage
-import java.util.*
+import java.util.UUID
 
 class SubscriptionService {
     private val channelsById = HashMap<String, ChannelData>()
     private val channelsByName = HashMap<String, ChannelData>()
     private val newestTimestampsSeen = HashMap<String, Long>()
 
-    fun handleSubscription(channelId: String, channelName: String?, channelType: EventHandler.ChannelType): SubscribeMessage? {
+    fun handleSubscription(
+        channelId: String,
+        channelName: String?,
+        channelType: EventHandler.ChannelType,
+    ): SubscribeMessage? {
 
         if (channelsById.contains(channelId)) {
             return null
@@ -58,4 +62,9 @@ class SubscriptionService {
     }
 }
 
-data class ChannelData(val id: String, val name: String?, val type: EventHandler.ChannelType, val subscriptionId: String)
+data class ChannelData(
+    val id: String,
+    val name: String?,
+    val type: EventHandler.ChannelType,
+    val subscriptionId: String,
+)

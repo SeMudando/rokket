@@ -8,8 +8,8 @@ import at.rueckgr.kotlin.rocketbot.websocket.SendMessageMessage
 import com.fasterxml.jackson.databind.JsonNode
 
 @Suppress("unused")
-class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-    : AbstractStreamHandler(eventHandler, botConfiguration) {
+class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+    AbstractStreamHandler(eventHandler, botConfiguration) {
     override fun getHandledStream() = "stream-room-messages"
 
     @Suppress("UNCHECKED_CAST")
@@ -58,10 +58,9 @@ class RoomMessageStreamHandler(eventHandler: EventHandler, botConfiguration: Bot
         val user = EventHandler.User(userId, username)
         val message = EventHandler.Message(messageText, botMessage)
 
-        val outgoingMessages = if(username == botConfiguration.username) {
+        val outgoingMessages = if (username == botConfiguration.username) {
             eventHandler.handleOwnMessage(channel, user, message)
-        }
-        else {
+        } else {
             eventHandler.handleRoomMessage(channel, user, message)
         }
         return outgoingMessages.map {

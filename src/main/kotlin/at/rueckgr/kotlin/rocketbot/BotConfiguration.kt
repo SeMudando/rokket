@@ -6,5 +6,5 @@ data class BotConfiguration(
     val password: String,
     val ignoredChannels: List<String>,
     val botId: String,
-    val webservicePort: Int
+    val webservicePort: Int,
 )

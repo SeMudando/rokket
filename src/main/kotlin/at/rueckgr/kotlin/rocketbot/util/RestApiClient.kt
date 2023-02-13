@@ -19,8 +19,10 @@ class RestApiClient(private val botHost: String) {
                 headers(buildHeaders())
                 contentType(ContentType.Application.Json)
                 setBody(object {
-                    @Suppress("unused") val message = ""
-                    @Suppress("unused") val status = "online"
+                    @Suppress("unused")
+                    val message = ""
+                    @Suppress("unused")
+                    val status = "online"
                 })
             }.body()
         }

@@ -24,8 +24,7 @@ class ReconnectWaitService {
 
         val newWaitingTime = if (waitingTime == waitingTimes.last()) {
             waitingTimes.last()
-        }
-        else {
+        } else {
             waitingTimes[waitingTimes.indexOf(waitingTime) + 1]
         }
 

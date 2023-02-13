@@ -5,5 +5,5 @@ data class WebserviceMessage(
     val roomName: String?,
     val message: String,
     val emoji: String? = null,
-    val username: String? = null
+    val username: String? = null,
 )

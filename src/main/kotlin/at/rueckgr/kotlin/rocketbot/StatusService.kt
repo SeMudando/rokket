@@ -12,13 +12,13 @@ class StatusService {
 
     fun getStatus(): Status {
         val problems = healthChecker!!.performHealthCheck()
-        val status = if (problems.isNotEmpty() || LocalDateTime.now().minusSeconds(criticalSeconds).isAfter(PingMessageHandler.lastPing)) {
+        val status = if (problems.isNotEmpty() || LocalDateTime.now().minusSeconds(criticalSeconds)
+                .isAfter(PingMessageHandler.lastPing)
+        ) {
             BotStatus.CRITICAL
-        }
-        else if (LocalDateTime.now().minusSeconds(warningSeconds).isAfter(PingMessageHandler.lastPing)) {
+        } else if (LocalDateTime.now().minusSeconds(warningSeconds).isAfter(PingMessageHandler.lastPing)) {
             BotStatus.WARNING
-        }
-        else {
+        } else {
             BotStatus.OK
         }
         val additionalStatusInformation = healthChecker!!.getAdditionalStatusInformation()
@@ -31,7 +31,7 @@ class StatusService {
         val startDate: LocalDateTime?,
         val lastPing: LocalDateTime,
         val problems: List<HealthProblem>,
-        val additionalStatusInformation: Map<String, Map<String, String>>
+        val additionalStatusInformation: Map<String, Map<String, String>>,
     )
 
     enum class BotStatus {

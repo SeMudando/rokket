@@ -6,20 +6,20 @@ import at.rueckgr.kotlin.rocketbot.websocket.PongMessage
 import com.fasterxml.jackson.databind.JsonNode
 import java.time.LocalDateTime
 
-class PingMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration) {
-    companion object {
-        var lastPing: LocalDateTime = LocalDateTime.now()
+class PingMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+  AbstractMessageHandler(eventHandler, botConfiguration) {
+  companion object {
+    var lastPing: LocalDateTime = LocalDateTime.now()
 
-        fun updateLastPing() {
-            lastPing = LocalDateTime.now()
-        }
+    fun updateLastPing() {
+      lastPing = LocalDateTime.now()
     }
+  }
 
-    override fun getHandledMessage() = "ping"
+  override fun getHandledMessage() = "ping"
 
-    override fun handleMessage(data: JsonNode): Array<Any> {
-        updateLastPing()
-        return arrayOf(PongMessage())
-    }
+  override fun handleMessage(data: JsonNode): Array<Any> {
+    updateLastPing()
+    return arrayOf(PongMessage())
+  }
 }

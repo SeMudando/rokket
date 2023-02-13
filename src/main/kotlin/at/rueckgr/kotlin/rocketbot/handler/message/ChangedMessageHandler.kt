@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import org.reflections.Reflections
 
 @Suppress("unused")
-class ChangedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration)
-        : AbstractMessageHandler(eventHandler, botConfiguration) {
+class ChangedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
+    AbstractMessageHandler(eventHandler, botConfiguration) {
     private val handlers: Map<String, AbstractStreamHandler> =
         Reflections(AbstractStreamHandler::class.java.packageName)
             .getSubTypesOf(AbstractStreamHandler::class.java)
