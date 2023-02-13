@@ -3,7 +3,6 @@ package br.com.semudando.rokket
 import br.com.semudando.rokket.exception.LoginException
 import br.com.semudando.rokket.exception.TerminateWebsocketClientException
 import br.com.semudando.rokket.handler.message.AbstractMessageHandler
-import br.com.semudando.rokket.util.MessageHelper
 import br.com.semudando.rokket.util.ReconnectWaitService
 import br.com.semudando.rokket.websocket.ConnectMessage
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -15,17 +14,10 @@ import io.ktor.client.plugins.websocket.wss
 import io.ktor.http.HttpMethod
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.reflections.Reflections
-import java.time.LocalDateTime
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.TimeUnit
 
 
 public class Bot(
