@@ -11,25 +11,25 @@ import com.fasterxml.jackson.databind.JsonNode
 
 @Suppress("unused")
 class ConnectedMessageHandler(eventHandler: EventHandler, botConfiguration: BotConfiguration) :
-    AbstractMessageHandler(eventHandler, botConfiguration) {
-    override fun getHandledMessage() = "connected"
+  AbstractMessageHandler(eventHandler, botConfiguration) {
+  override fun getHandledMessage() = "connected"
 
-    override fun handleMessage(data: JsonNode): Array<Any> {
-        val digest = botConfiguration.password
+  override fun handleMessage(data: JsonNode): Array<Any> {
+    val digest = botConfiguration.password
 
-        ReconnectWaitService.instance.resetWaitingTime()
-        PingMessageHandler.updateLastPing()
+    ReconnectWaitService.instance.resetWaitingTime()
+    PingMessageHandler.updateLastPing()
 
-        return arrayOf(
-            LoginMessage(
-                id = "login-initial",
-                params = arrayOf(
-                    WebserviceRequestParam(
-                        UserData(botConfiguration.username),
-                        PasswordData(digest, "sha-256")
-                    )
-                )
-            )
+    return arrayOf(
+      LoginMessage(
+        id = "login-initial",
+        params = arrayOf(
+          WebserviceRequestParam(
+            UserData(botConfiguration.username),
+            PasswordData(digest, "sha-256")
+          )
         )
-    }
+      )
+    )
+  }
 }

@@ -1,6 +1,5 @@
 package br.com.semudando.rokket.util
 
-import br.com.semudando.rokket.Bot
 import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -12,57 +11,58 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
 
 class RestApiClient(private val botHost: String) {
-    fun updateStatus() {
-        val response: UsersSetStatusResponse = runBlocking {
-            createHttpClient().post {
-                url(buildUrl("users.setStatus"))
-                headers(buildHeaders())
-                contentType(ContentType.Application.Json)
-                setBody(object {
-                    @Suppress("unused")
-                    val message = ""
-                    @Suppress("unused")
-                    val status = "online"
-                })
-            }.body()
-        }
+  fun updateStatus() {
+    val response: UsersSetStatusResponse = runBlocking {
+      createHttpClient().post {
+        url(buildUrl("users.setStatus"))
+        headers(buildHeaders())
+        contentType(ContentType.Application.Json)
+        setBody(object {
+          @Suppress("unused")
+          val message = ""
 
-        if (!response.success) {
-        }
+          @Suppress("unused")
+          val status = "online"
+        })
+      }.body()
     }
 
-    fun getInstanceVersion(): String? {
-        val statisticsResponse: StatisticsResponse = runBlocking {
-            createHttpClient().get {
-                url(buildUrl("statistics"))
-                headers(buildHeaders())
-                contentType(ContentType.Application.Json)
-            }.body()
-        }
+    if (!response.success) {
+    }
+  }
 
-        if (!statisticsResponse.success) {
-            return null
-        }
-
-        return statisticsResponse.version
+  fun getInstanceVersion(): String? {
+    val statisticsResponse: StatisticsResponse = runBlocking {
+      createHttpClient().get {
+        url(buildUrl("statistics"))
+        headers(buildHeaders())
+        contentType(ContentType.Application.Json)
+      }.body()
     }
 
-    private fun buildHeaders(): HeadersBuilder.() -> Unit = {
-        append("X-Auth-Token", br.com.semudando.rokket.Bot.authToken!!)
-        append("X-User-Id", br.com.semudando.rokket.Bot.userId!!)
+    if (!statisticsResponse.success) {
+      return null
     }
 
-    private fun createHttpClient() = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            }
-        }
+    return statisticsResponse.version
+  }
+
+  private fun buildHeaders(): HeadersBuilder.() -> Unit = {
+    append("X-Auth-Token", br.com.semudando.rokket.Bot.authToken!!)
+    append("X-User-Id", br.com.semudando.rokket.Bot.userId!!)
+  }
+
+  private fun createHttpClient() = HttpClient(CIO) {
+    install(ContentNegotiation) {
+      jackson {
+        disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      }
     }
+  }
 
-    private fun buildUrl(endpoint: String) = "https://$botHost/api/v1/$endpoint"
+  private fun buildUrl(endpoint: String) = "https://$botHost/api/v1/$endpoint"
 
-    data class UsersSetStatusResponse(val success: Boolean)
+  data class UsersSetStatusResponse(val success: Boolean)
 
-    data class StatisticsResponse(val version: String?, val success: Boolean, val error: String?)
+  data class StatisticsResponse(val version: String?, val success: Boolean, val error: String?)
 }
