@@ -4,6 +4,7 @@ import br.com.semudando.rokket.handler.message.AbstractMessageHandler
 import br.com.semudando.rokket.util.ReconnectWaitService
 import br.com.semudando.rokket.websocket.message.outgoing.ConnectMessage
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.classgraph.ClassGraph
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
@@ -13,8 +14,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.reflections.Reflections
 
 
 public class Bot(
@@ -74,16 +73,12 @@ public class Bot(
     }
   }
 
-  private fun getHandlers() = Reflections(AbstractMessageHandler::class.java.packageName)
-    .getSubTypesOf(AbstractMessageHandler::class.java)
-    .map {
-      it
-        .getDeclaredConstructor(
-          EventHandler::class.java,
-          BotConfiguration::class.java
-        )
-        .newInstance(eventHandler, botConfiguration)
-    }
-    .associateBy { it.getHandledMessage() }
+  private fun getHandlers() =
+    ClassGraph().enableAllInfo().scan().getSubclasses(AbstractMessageHandler::class.java).loadClasses().map {
+      it.getDeclaredConstructor(
+        EventHandler::class.java,
+        BotConfiguration::class.java
+      ).newInstance(eventHandler, botConfiguration) as AbstractMessageHandler
+    }.associateBy { it.getHandledMessage() }
 }
 

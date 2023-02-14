@@ -18,8 +18,8 @@ dependencies {
     // Ktor Client
     implementation(libs.bundles.ktor.client)
 
-    // Reflections
-    implementation(libs.reflections)
+    // Classgraph
+    implementation(libs.classgraph)
 
 }
 
