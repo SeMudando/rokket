@@ -1,7 +1,7 @@
 package br.com.semudando.rokket.util
 
 import br.com.semudando.rokket.EventHandler
-import br.com.semudando.rokket.websocket.SendMessageMessage
+import br.com.semudando.rokket.websocket.message.outgoing.SendMessageMessage
 import java.util.UUID
 
 internal class MessageHelper {

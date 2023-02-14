@@ -2,7 +2,7 @@ package br.com.semudando.rokket
 
 import br.com.semudando.rokket.handler.message.AbstractMessageHandler
 import br.com.semudando.rokket.util.ReconnectWaitService
-import br.com.semudando.rokket.websocket.ConnectMessage
+import br.com.semudando.rokket.websocket.message.outgoing.ConnectMessage
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -24,14 +24,12 @@ public class Bot(
   private val httpClient = HttpClient(CIO) { install(WebSockets) }
 
   internal companion object {
-    val subscriptionService = SubscriptionService()
     var userId: String? = null
     var authToken: String? = null
   }
 
-  public fun start() {
-    runBlocking { runWebsocketClient() }
-
+  public suspend fun run() {
+    runWebsocketClient()
   }
 
   private suspend fun runWebsocketClient() {
@@ -45,12 +43,6 @@ public class Bot(
       }
 
       ReconnectWaitService.instance.wait()
-
-
-      // we must clear the list of all channels
-      // to ensure that upon reconnect, the bot
-      // will properly re-subscribe to all channels
-      subscriptionService.reset()
     }
   }
 
@@ -62,17 +54,7 @@ public class Bot(
   }
 
   private suspend fun DefaultClientWebSocketSession.receiveMessages() {
-    val handlers = Reflections(AbstractMessageHandler::class.java.packageName)
-      .getSubTypesOf(AbstractMessageHandler::class.java)
-      .map {
-        it
-          .getDeclaredConstructor(
-            EventHandler::class.java,
-            BotConfiguration::class.java
-          )
-          .newInstance(eventHandler, botConfiguration)
-      }
-      .associateBy { it.getHandledMessage() }
+    val handlers = getHandlers()
 
     for (message in incoming) {
       launch {
@@ -91,5 +73,17 @@ public class Bot(
       }
     }
   }
+
+  private fun getHandlers() = Reflections(AbstractMessageHandler::class.java.packageName)
+    .getSubTypesOf(AbstractMessageHandler::class.java)
+    .map {
+      it
+        .getDeclaredConstructor(
+          EventHandler::class.java,
+          BotConfiguration::class.java
+        )
+        .newInstance(eventHandler, botConfiguration)
+    }
+    .associateBy { it.getHandledMessage() }
 }
 

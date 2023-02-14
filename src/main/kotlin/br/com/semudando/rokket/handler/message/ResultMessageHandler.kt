@@ -5,9 +5,8 @@ import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.EventHandler
 import br.com.semudando.rokket.exception.LoginException
 import br.com.semudando.rokket.util.MessageHelper
-import br.com.semudando.rokket.util.RestApiClient
-import br.com.semudando.rokket.websocket.RoomsGetMessage
-import br.com.semudando.rokket.websocket.SubscribeMessage
+import br.com.semudando.rokket.websocket.message.outgoing.RoomsGetMessage
+import br.com.semudando.rokket.websocket.message.outgoing.SubscribeMessage
 import com.fasterxml.jackson.databind.JsonNode
 
 public class ResultMessageHandler(
@@ -60,9 +59,7 @@ public class ResultMessageHandler(
         Bot.subscriptionService.handleSubscription(id, name, type)
       }
 
-    RestApiClient(botConfiguration.host).updateStatus()
-
-    eventHandler.botInitialized()
+        eventHandler.botInitialized()
 
     return messages.toTypedArray()
   }

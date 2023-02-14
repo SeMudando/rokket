@@ -2,7 +2,7 @@ package br.com.semudando.rokket.handler.message
 
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.EventHandler
-import br.com.semudando.rokket.websocket.PongMessage
+import br.com.semudando.rokket.websocket.message.outgoing.PongMessage
 import com.fasterxml.jackson.databind.JsonNode
 import java.time.LocalDateTime
 

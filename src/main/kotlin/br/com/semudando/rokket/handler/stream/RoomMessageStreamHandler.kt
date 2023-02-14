@@ -3,7 +3,7 @@ package br.com.semudando.rokket.handler.stream
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.EventHandler
 import br.com.semudando.rokket.util.MessageHelper
-import br.com.semudando.rokket.websocket.SendMessageMessage
+import br.com.semudando.rokket.websocket.message.outgoing.SendMessageMessage
 import com.fasterxml.jackson.databind.JsonNode
 
 public class RoomMessageStreamHandler(

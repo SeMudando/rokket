@@ -1,4 +1,4 @@
-package br.com.semudando.rokket.websocket
+package br.com.semudando.rokket.websocket.message.outgoing
 
 public data class LoginMessage(
   val msg: String = "method",

@@ -3,10 +3,10 @@ package br.com.semudando.rokket.handler.message
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.EventHandler
 import br.com.semudando.rokket.util.ReconnectWaitService
-import br.com.semudando.rokket.websocket.LoginMessage
-import br.com.semudando.rokket.websocket.PasswordData
-import br.com.semudando.rokket.websocket.UserData
-import br.com.semudando.rokket.websocket.WebserviceRequestParam
+import br.com.semudando.rokket.websocket.message.outgoing.LoginMessage
+import br.com.semudando.rokket.websocket.message.outgoing.PasswordData
+import br.com.semudando.rokket.websocket.message.outgoing.UserData
+import br.com.semudando.rokket.websocket.message.outgoing.WebserviceRequestParam
 import com.fasterxml.jackson.databind.JsonNode
 
 public class ConnectedMessageHandler(
