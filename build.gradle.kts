@@ -3,26 +3,38 @@ version = "0.1.0"
 
 @Suppress("DSL_SCOPE_VIOLATION") //KTIJ-19369
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlinx.serialization)
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.kotlinx.serialization)
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    // Jackson
-    implementation(libs.bundles.jackson)
+  // Jackson
+  implementation(libs.bundles.jackson)
 
-    // Ktor Client
-    implementation(libs.bundles.ktor.client)
+  // Ktor Client
+  implementation(libs.bundles.ktor.client)
 
-    // Classgraph
-    implementation(libs.classgraph)
+  // Classgraph
+  implementation(libs.classgraph)
 
+  // Kotest
+  testImplementation(libs.bundles.kotest)
+
+  // Mockk
+  testImplementation(libs.mockk)
+
+  // Log
+  implementation(libs.slf4j.simple)
 }
 
 kotlin {
   explicitApi()
+}
+
+tasks.withType<Test> {
+  useJUnitPlatform()
 }

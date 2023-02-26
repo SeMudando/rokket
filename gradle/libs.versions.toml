@@ -6,6 +6,7 @@ ktor = "2.2.3"
 jackson = "2.14.1"
 
 [libraries]
+mockk = "io.mockk:mockk:1.13.4"
 kotest-runner-junit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-property-testing = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 kotest-assertions-json = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
