@@ -5,6 +5,7 @@ version = "0.1.0"
 plugins {
   alias(libs.plugins.kotlin)
   alias(libs.plugins.kotlinx.serialization)
+  alias(libs.plugins.detekt)
 }
 
 repositories {
@@ -37,4 +38,8 @@ kotlin {
 
 tasks.withType<Test> {
   useJUnitPlatform()
+}
+
+detekt {
+  autoCorrect = true
 }

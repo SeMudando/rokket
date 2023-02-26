@@ -40,4 +40,5 @@ jackson = ["jackson-jsr310", "jackson-databind"]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqldelight" }
+detekt = "io.gitlab.arturbosch.detekt:1.22.0"
 

@@ -39,14 +39,14 @@ internal class RocketClient(
     PasswordData(botConfiguration.sha256Password)
   )
 
+  @Suppress("MagicNumber")
+  //FIXME while true with a fixed 1 second delay
   private fun preparePong() {
     launch {
-      //FIXME while true with a fixed 1 second delay
       while (true) {
         webSocketClient.sendMessage(PongMessage())
         delay(1000)
       }
     }
   }
-
 }
