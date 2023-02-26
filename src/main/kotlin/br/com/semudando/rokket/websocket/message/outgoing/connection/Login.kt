@@ -1,13 +1,13 @@
-package br.com.semudando.rokket.websocket.message.outgoing
+package br.com.semudando.rokket.websocket.message.outgoing.connection
 
-import br.com.semudando.rokket.websocket.message.Message
+import br.com.semudando.rokket.websocket.message.outgoing.Request
 
-public data class LoginMessage(
-  val params: List<WebserviceRequestParam>,
+public data class Login(
+  override val params: List<WebserviceRequestParam>,
   override val msg: String = "method",
-  val method: String = "login",
+  override val method: String = "login",
   override val id: String = "login",
-) : Message {
+) : Request {
   public constructor(param: WebserviceRequestParam) : this(listOf(param))
 }
 

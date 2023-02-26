@@ -1,8 +1,8 @@
 package br.com.semudando.rokket.websocket.message
 
-import br.com.semudando.rokket.websocket.message.incoming.PingMessage
-import br.com.semudando.rokket.websocket.message.outgoing.ConnectMessage
-import br.com.semudando.rokket.websocket.message.outgoing.PongMessage
+import br.com.semudando.rokket.websocket.message.incoming.heartbeat.Ping
+import br.com.semudando.rokket.websocket.message.outgoing.connection.ConnectMessage
+import br.com.semudando.rokket.websocket.message.outgoing.heartbeat.Pong
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -13,11 +13,11 @@ class SerializerTest : FunSpec({
     """{
       "msg": "ping"
       }
-    """.trimIndent().toMessage() shouldBe PingMessage("ping")
+    """.trimIndent().toMessage() shouldBe Ping("ping")
   }
 
   test("Pong message") {
-    PongMessage().toJson() shouldEqualJson  """
+    Pong().toJson() shouldEqualJson  """
       {
       "msg": "pong"
       }

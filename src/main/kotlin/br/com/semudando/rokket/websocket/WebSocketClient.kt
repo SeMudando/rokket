@@ -2,6 +2,8 @@ package br.com.semudando.rokket.websocket
 
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.websocket.message.Message
+import br.com.semudando.rokket.websocket.message.incoming.Response
+import br.com.semudando.rokket.websocket.message.outgoing.Request
 import br.com.semudando.rokket.websocket.message.toJson
 import br.com.semudando.rokket.websocket.message.toMessage
 import io.ktor.client.HttpClient
@@ -30,17 +32,20 @@ internal class WebSocketClient(
   init {
     launch {
       for (frame in session.incoming) {
-        receive(frame.toMessage())
+        val message = frame.toMessage()
+        if(message is Response) {
+          receive(message)
+        }
       }
     }
   }
 
-  suspend fun sendMessage(message: Message, callback: CallbackHandler) {
+  suspend fun sendMessage(message: Request, callback: CallbackHandler) {
     sendMessage(message)
     callbacks[message.id] = callback
   }
 
-  private fun receive(message: Message?) {
+  private fun receive(message: Response?) {
     if(message == null) return
 
     launch {

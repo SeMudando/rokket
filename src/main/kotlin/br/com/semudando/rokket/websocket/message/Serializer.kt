@@ -1,9 +1,9 @@
 package br.com.semudando.rokket.websocket.message
 
-import br.com.semudando.rokket.websocket.message.incoming.ConnectedMessage
-import br.com.semudando.rokket.websocket.message.incoming.PingMessage
-import br.com.semudando.rokket.websocket.message.incoming.ResultMessage
-import br.com.semudando.rokket.websocket.message.outgoing.ConnectMessage
+import br.com.semudando.rokket.websocket.message.incoming.connection.Connected
+import br.com.semudando.rokket.websocket.message.incoming.heartbeat.Ping
+import br.com.semudando.rokket.websocket.message.incoming.Result
+import br.com.semudando.rokket.websocket.message.outgoing.connection.ConnectMessage
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -23,9 +23,9 @@ internal fun String.toMessage(): Message? {
 
   return when(tree.msg) {
     "connect" -> mapper.readValue<ConnectMessage>(this)
-    "connected" -> mapper.readValue<ConnectedMessage>(this)
-    "ping" -> mapper.readValue<PingMessage>(this)
-    "result" -> mapper.readValue<ResultMessage>(this)
+    "connected" -> mapper.readValue<Connected>(this)
+    "ping" -> mapper.readValue<Ping>(this)
+    "result" -> mapper.readValue<Result>(this)
     else -> {
       println(tree.toPrettyString())
       return null
