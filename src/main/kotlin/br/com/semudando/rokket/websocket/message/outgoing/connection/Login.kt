@@ -1,18 +1,14 @@
 package br.com.semudando.rokket.websocket.message.outgoing.connection
 
-import br.com.semudando.rokket.websocket.message.outgoing.Request
+import br.com.semudando.rokket.websocket.message.outgoing.Method
 
-public data class Login(
-  override val params: List<WebserviceRequestParam>,
-  override val msg: String = "method",
-  override val method: String = "login",
-  override val id: String = "login",
-) : Request {
-  public constructor(param: WebserviceRequestParam) : this(listOf(param))
-}
+public class Login(
+  username: String,
+  sha256Digest: String,
+) : Method("login", listOf(WebserviceRequestParam(UserData(username), PasswordData(sha256Digest))), "login")
 
-public data class WebserviceRequestParam(val user: UserData, val password: PasswordData)
+private data class WebserviceRequestParam(val user: UserData, val password: PasswordData)
 
-public data class UserData(val username: String)
+private data class UserData(val username: String)
 
-public data class PasswordData(val digest: String, val algorithm: String = "sha-256")
+private data class PasswordData(val digest: String, val algorithm: String = "sha-256")
