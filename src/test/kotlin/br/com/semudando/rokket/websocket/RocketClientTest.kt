@@ -3,10 +3,7 @@ package br.com.semudando.rokket.websocket
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.websocket.message.outgoing.connection.ConnectMessage
 import br.com.semudando.rokket.websocket.message.outgoing.connection.Login
-import br.com.semudando.rokket.websocket.message.outgoing.connection.PasswordData
 import br.com.semudando.rokket.websocket.message.outgoing.heartbeat.Pong
-import br.com.semudando.rokket.websocket.message.outgoing.connection.UserData
-import br.com.semudando.rokket.websocket.message.outgoing.connection.WebserviceRequestParam
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -27,22 +24,15 @@ class RocketClientTest : FunSpec({
 
     test("Login") {
       coVerify(exactly = 1) {
-        socketClient.sendMessage(
-          Login(
-            WebserviceRequestParam(UserData("user"), PasswordData("pass")),
-          )
-        )
+        socketClient.sendMessage(Login("user", "pass"))
       }
     }
 
     test("Connect and login order") {
       coVerifyOrder {
         socketClient.sendMessage(ConnectMessage())
-        socketClient.sendMessage(
-          Login(
-            WebserviceRequestParam(UserData("user"), PasswordData("pass")),
-          )
-        )
+        socketClient.sendMessage(Login("user", "pass"))
+
       }
     }
 

@@ -3,10 +3,7 @@ package br.com.semudando.rokket.websocket
 import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.websocket.message.outgoing.connection.ConnectMessage
 import br.com.semudando.rokket.websocket.message.outgoing.connection.Login
-import br.com.semudando.rokket.websocket.message.outgoing.connection.PasswordData
 import br.com.semudando.rokket.websocket.message.outgoing.heartbeat.Pong
-import br.com.semudando.rokket.websocket.message.outgoing.connection.UserData
-import br.com.semudando.rokket.websocket.message.outgoing.connection.WebserviceRequestParam
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,13 +28,9 @@ internal class RocketClient(
   }
 
   private suspend fun login() {
-    webSocketClient.sendMessage(Login(createLoginParam()))
+    webSocketClient.sendMessage(Login(botConfiguration.username, botConfiguration.sha256Password))
   }
 
-  private fun createLoginParam() = WebserviceRequestParam(
-    UserData(botConfiguration.username),
-    PasswordData(botConfiguration.sha256Password)
-  )
 
   @Suppress("MagicNumber")
   //FIXME while true with a fixed 1 second delay
