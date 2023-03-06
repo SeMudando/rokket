@@ -11,16 +11,17 @@ import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.websocket.send
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-internal fun interface CallbackHandler {
-  suspend fun process(message: Message)
+public fun interface CallbackHandler {
+  public suspend fun process(message: Message)
 }
 
 
 //FIXME Untested class. I don't know how to test a websocket ¯\_(ツ)_/¯
-internal class WebSocketClient(
+public class WebSocketClient(
   private val httpClient: HttpClient,
   private val configuration: BotConfiguration,
 ) : CoroutineScope by CoroutineScope(IO) {
@@ -31,16 +32,19 @@ internal class WebSocketClient(
 
   init {
     launch {
-      for (frame in session.incoming) {
-        val message = frame.toMessage()
-        if(message is Response) {
-          receive(message)
+      while (true) {
+        for (frame in session.incoming) {
+          val message = frame.toMessage()
+          if(message is Response) {
+            receive(message)
+          }
         }
       }
     }
   }
 
-  suspend fun sendMessage(message: Request, callback: CallbackHandler) {
+
+  public suspend fun sendMessage(message: Request, callback: CallbackHandler) {
     sendMessage(message)
     callbacks[message.id] = callback
   }
@@ -53,7 +57,7 @@ internal class WebSocketClient(
     }
   }
 
-  suspend fun sendMessage(message: Message) {
+  public suspend fun sendMessage(message: Message) {
     session.send(message.toJson())
   }
 }

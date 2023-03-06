@@ -4,13 +4,14 @@ import br.com.semudando.rokket.BotConfiguration
 import br.com.semudando.rokket.websocket.message.outgoing.connection.ConnectMessage
 import br.com.semudando.rokket.websocket.message.outgoing.connection.Login
 import br.com.semudando.rokket.websocket.message.outgoing.heartbeat.Pong
+import br.com.semudando.rokket.websocket.message.outgoing.user.RegisterUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-internal class RocketClient(
+public class RocketClient(
   private val webSocketClient: WebSocketClient,
   private val botConfiguration: BotConfiguration
 ) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
@@ -29,6 +30,12 @@ internal class RocketClient(
 
   private suspend fun login() {
     webSocketClient.sendMessage(Login(botConfiguration.username, botConfiguration.sha256Password))
+  }
+
+  public suspend fun registerUser(email: String, pass: String, name: String, secretUrl: String? = null) {
+    webSocketClient.sendMessage(RegisterUser(email, pass, name, secretUrl)) {
+      println("Woow! MEssage! $it")
+    }
   }
 
 

@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 class RocketClientTest : FunSpec({
 
   val socketClient = mockk<WebSocketClient>(relaxed = true)
-  val configuration = BotConfiguration("host", "user", "pass")
+  val configuration = BotConfiguration("host", 3, "user", "pass")
 
   context("Initialization") {
     RocketClient(socketClient, configuration)
